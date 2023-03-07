@@ -71,7 +71,7 @@ if __name__ == "__main__":
     #                'hfl-bert-wwm', 'hfl-bert-wwm-ext',
     #                'uer-mixed-bert-tiny', 'uer-mixed-bert-small',
     #                'uer-mixed-bert-base', 'uer-mixed-bert-large']
-    model_name = 'uer-mixed-bert-base'
+    model_name = 'google-bert-zh'
 
     # Choose a dataset----------------------------------------------------------------------
     # dataset_names = ['eprstmt', 'tnews', 'csldcp', 'iflytek']
@@ -81,19 +81,40 @@ if __name__ == "__main__":
     bert_model = Model(model_name=model_name)
 
     # Create a template --------------------------------------------------------------------
-    label_names = ['娱乐', '体育', '音乐', '电竞', '经济', '教育']
-    patterns = ["这是一篇{}新闻".format(label) for label in label_names]
-
+    #label_names = ['娱乐', '体育', '音乐', '电竞', '经济', '教育']
+    #patterns = ["这是一篇{}新闻".format(label) for label in label_names]
+    label_names = ['有精神病','沒病','有憂鬱症','有亞斯柏格症','有焦慮症']
+    patterns = ["這是一句{}的句子。重鬱症、憂鬱症、亞斯柏格症、焦慮症都是精神病。".format(label) for label in label_names]
     # Prefix or Suffix-------------------------------------------------------------------
     is_pre = True
 
     # Load the demo set--------------------------------------------------------------------
-    demo_data_zh = ['梅西超越贝利成为南美射手王',
-                 '贾斯汀比伯发布新单曲',
-                 '比心APP被下架并永久关闭陪玩功能',
-                 '徐莉佳的伦敦奥运金牌氧化了',
-                 '10元芯片卖400元!芯片经销商被罚',
-                 '北京首批校外培训机构白名单公布']
+    # demo_data_zh = ['梅西超越贝利成为南美射手王',
+    #              '贾斯汀比伯发布新单曲',
+    #              '比心APP被下架并永久关闭陪玩功能',
+    #              '徐莉佳的伦敦奥运金牌氧化了',
+    #              '10元芯片卖400元!芯片经销商被罚',
+    #              '北京首批校外培训机构白名单公布']
+    
+
+    demo_data_zh = ['結果有亞斯柏格症的人竟然是我', # ==== pos =====
+                 '自從憂鬱症過後不知道是疾病還是藥物的因素',
+                 '憂鬱症過後不知道是疾病還是藥物的因素',
+                 '憂鬱症治療超過一年',
+                 '精神科醫師判定我為無精神症的重鬱症',
+                 '我覺得我有社交焦慮症',
+                 '醫生說我只是輕微憂鬱症',
+                 '我被判定這種病很久了之前還因為嚴重解離現象住院過',
+                 '最後醫生開藥時問我讀什麼的',  # ===== neg =====
+                 '上一堆奇怪的心靈課程還硬拉小孩要學',
+                 '可是再唸下去我不開心啊焦慮症會發作',
+                 '竟然被說是無法讀懂肢體語言和表情',
+                 '我也希望我能爬得起床啊我鬧鐘已經設了十幾個',
+                 '知道爸爸壽命竟然不是從算命師說出來',
+                 '就連手機看詩詞都要看個三次才能看完',
+                 '有六個月每天晚上都躲在棉被裡哭'
+                 ]
+
 
     demo_data = demo_data_zh
     demo_generator_list = []
