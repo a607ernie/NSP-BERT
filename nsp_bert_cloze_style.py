@@ -122,7 +122,7 @@ if __name__ == "__main__":
     #                'hfl-bert-wwm', 'hfl-bert-wwm-ext',
     #                'uer-mixed-bert-tiny', 'uer-mixed-bert-small',
     #                'uer-mixed-bert-base', 'uer-mixed-bert-large']
-    model_name = 'uer-mixed-bert-base'
+    model_name = 'google-bert-zh'
 
     # Choose a dataset----------------------------------------------------------------------
     # dataset_names = ['chid']
