@@ -114,7 +114,7 @@ class Datasets():
         elif (dataset_name == "chid"):
             self.train_path = r"./datasets/few_clue/chid/train_few_all.json"
             self.dev_path = r"./datasets/few_clue/chid/dev_few_all.json"
-            self.test_path = r"./datasets/few_clue/chid/test_public.json"
+            self.test_path = r"./datasets/few_clue/chid/test0309.json"
             self.metric = 'Acc'
 
         elif (dataset_name == "csl"):

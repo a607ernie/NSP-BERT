@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     # Load the hyper-parameters-----------------------------------------------------------
     maxlen = 128  # The max length 128 is used in our paper
-    batch_size = 40  # Will not influence the results
+    batch_size = 16  # Will not influence the results
 
     # Choose one of the models----------------------------------------------------------------------
     # Recommend to use 'uer-mixed-bert-base'
@@ -167,5 +167,5 @@ if __name__ == "__main__":
     )
 
     # Zero-Shot predict and evaluate-------------------------------------------------------
-    evaluate(dev_generator_list, dev_data, note="Dev Set")
+    #evaluate(dev_generator_list, dev_data, note="Dev Set")
     evaluate(test_generator_list, test_data, note="Test Set")
