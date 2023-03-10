@@ -58,7 +58,7 @@ def evaluate_dev(data_generator, data, label_num, note=""):
             id += 1
 
     # Evaluate the results
-    thresholds = [0] * (label_num - 1)
+    thresholds = [0] * (label_num - 1)      # [0,0,0] if templates are 蘊含、矛盾、中立
     trues = [d[1] for d in data]
     preds = [0] * len(data)
     sorted_id_logit = sorted(id2logit.items(), key=lambda item: item[1])
