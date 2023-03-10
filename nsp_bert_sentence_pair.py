@@ -62,7 +62,11 @@ def evaluate_dev(data_generator, data, label_num, note=""):
     trues = [d[1] for d in data]
     preds = [0] * len(data)
     sorted_id_logit = sorted(id2logit.items(), key=lambda item: item[1])
+    print(sorted_id_logit)
     split_num = len(data) // label_num
+    print(len(data))
+    print(label_num)
+    print(split_num)
     start = 0
 
     for i in range(label_num):
@@ -135,6 +139,7 @@ def evaluate_test_batch(data_generator, data, label_num, note):
         else:
             print("Batch size: {}\t Acc.: {:.4f}".format(batch_size, acc), flush=True)
 
+    return preds
 
 def evaluate_test_threshold(data_generator, data, label_num, thresholds, note):
     print("\n*******************Start to Zero-Shot predict on 【{}】 with thresholds*******************".format(
@@ -160,7 +165,7 @@ def evaluate_test_threshold(data_generator, data, label_num, thresholds, note):
                 break
             label += 1
         preds[id] = label
-
+    print(preds)
     # for i, (t, p, l) in enumerate(zip(trues, preds, logits)):
     #     print("{}:\tt:{}\tp:{}\tl:{}".format(i, t, p, l))
     # sorted_logits = sorted(logits, reverse=True)
@@ -248,7 +253,7 @@ if __name__ == "__main__":
     # dataset_names = ['MRPC', 'QQP', 'STS-B', 'MNLI', 'MNLI-mm', 'QNLI', 'RTE', 'WNLI']
     # Others in LM-BFF
     # dataset_names = ['SNLI']
-    dataset_name = 'QQP'
+    dataset_name = 'ocnli'
 
     # Choose a model----------------------------------------------------------------------
     # Recommend to use 'uer-mixed-bert-base' and 'google-bert-cased-wwm-large'
@@ -257,25 +262,28 @@ if __name__ == "__main__":
     #                'google-bert-zh', 'hfl-bert-wwm', 'hfl-bert-wwm-ext',
     #                'uer-mixed-bert-tiny', 'uer-mixed-bert-small',
     #                'uer-mixed-bert-base', 'uer-mixed-bert-large']
-    model_name = MODEL_NAME[dataset_name]
-
+    #model_name = MODEL_NAME[dataset_name]
+    model_name = "google-bert-zh"
+    
     # Prefix or Suffix.
     # Defult settings in our paper.
     # {'bustm':True, 'ocnli':True, 'csl':False}
     is_pre = IS_PRE[dataset_name]
+
+    label_names = ["entailment", "contradiction", "neutral"]
 
     # Load model and dataset class
     bert_model = Model(model_name=model_name)
     dataset = Datasets(dataset_name=dataset_name)
 
     # Load the dev set--------------------------------------------------------------------
-    dev_data = dataset.load_data(dataset.dev_path, sample_num=-1)
+    dev_data = dataset.load_data(dataset.dev_path, sample_num=10)
     dev_data = sample_dataset(dev_data, K_SHOT[dataset_name])
     dev_generator = data_generator(is_pre=is_pre, data=dev_data, batch_size=batch_size)
 
     # Load the test set--------------------------------------------------------------------
     # -1 for all the samples
-    test_data = dataset.load_data(dataset.test_path, sample_num=-1)
+    test_data = dataset.load_data(dataset.test_path, sample_num=10)
     test_generator_list = []
     test_generator = data_generator(is_pre=is_pre, data=test_data, batch_size=batch_size)
 
@@ -292,7 +300,7 @@ if __name__ == "__main__":
     print("Thresholds of 【{}】 on dev set: {}".format(dataset_name, thresholds))
 
     # Predict by batched test set.
-    evaluate_test_batch(test_generator, test_data, len(dataset.labels), note="Test Set")
+    preds = evaluate_test_batch(test_generator, test_data, len(dataset.labels), note="Test Set")
 
     # Predict by thresholds.
     evaluate_test_threshold(test_generator, test_data, len(dataset.labels), thresholds=thresholds, note="Test Set")
@@ -301,3 +309,12 @@ if __name__ == "__main__":
     time_end = time.time()
     time_cost = time_end - time_start
     print("Time cost: {:.1f}s".format(time_cost))
+
+    
+    for i, (p, d) in enumerate(zip(preds, test_data)):
+        pred_label = label_names[p]
+        print("Sample {}:".format(i))
+        print("Original Text: {}".format(d))
+        print("Predict label: {}".format(pred_label))
+        
+        print()

@@ -67,7 +67,7 @@ def evaluate(data_generator_list, data, note=""):
     # for i in range(len(patterns_logits[0])):
     #     ls = [logits[i] for logits in patterns_logits]
     #     print("True:{}, Pred:{}, Neg:{:.6f}, Pos:{:.6f}, Text:{}".format(trues[i], preds[i], ls[0], ls[1], data[i]))
-
+    return preds
     confusion_matrix = metrics.confusion_matrix(trues, preds, labels=None, sample_weight=None)
     print("Confusion Matrix:\n{}".format(confusion_matrix), flush=True)
     if (dataset.metric == 'Matthews'):
@@ -103,15 +103,16 @@ if __name__ == "__main__":
     #                'google-bert-zh', 'hfl-bert-wwm', 'hfl-bert-wwm-ext',
     #                'uer-mixed-bert-tiny', 'uer-mixed-bert-small',
     #                'uer-mixed-bert-base', 'uer-mixed-bert-large']
-    model_name = MODEL_NAME[dataset_name]
+    model_name = "google-bert-zh"
 
     # Load model and dataset class
     bert_model = Model(model_name=model_name)
     dataset = Datasets(dataset_name=dataset_name)
 
     # Choose a template [0, 1, 2]--------------------------------------------------------
-    patterns = dataset.patterns[PATTERN_INDEX[dataset_name]]
-
+    label_names = ["Positive", "Negative"]
+    patterns = dataset.patterns[2]
+    print(patterns)
     # Prefix or Suffix-------------------------------------------------------------------
     is_pre = IS_PRE[dataset_name]
 
@@ -125,7 +126,7 @@ if __name__ == "__main__":
 
     # Load the test set--------------------------------------------------------------------
     # -1 for all the samples
-    test_data = dataset.load_data(dataset.test_path, sample_num=-1, is_shuffle=True)
+    test_data = dataset.load_data(dataset.test_path, sample_num=10, is_shuffle=True)
     test_generator_list = []
     for p in patterns:
         test_generator_list.append(data_generator(pattern=p, is_pre=is_pre, data=test_data, batch_size=batch_size))
@@ -140,5 +141,11 @@ if __name__ == "__main__":
     )
 
     # Zero-Shot predict and evaluate-------------------------------------------------------
-    evaluate(dev_generator_list, dev_data, note="Dev Set")
-    evaluate(test_generator_list, test_data, note="Test Set")
+    #evaluate(dev_generator_list, dev_data, note="Dev Set")
+    preds = evaluate(test_generator_list, test_data, note="Test Set")
+    for i, (p, d) in enumerate(zip(preds, test_data)):
+        pred_label = label_names[p]
+        print("Sample {}:".format(i))
+        print("Original Text: {}".format(d))
+        print("Predict label: {}".format(pred_label))
+        print()
